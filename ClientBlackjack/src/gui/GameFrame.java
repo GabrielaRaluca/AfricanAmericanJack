@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -26,6 +25,7 @@ import javax.swing.border.MatteBorder;
 import networking.MessageProcessor;
 import utilities.Card;
 
+@SuppressWarnings("serial")
 public class GameFrame extends JFrame implements Visualizable {
 
 	private JPanel contentPane;
@@ -65,23 +65,6 @@ public class GameFrame extends JFrame implements Visualizable {
 	private String currentPlayer;
 
 	private MessageProcessor processor;
-	/**
-	 * Launch the application.
-	 */
-
-	/*public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GameFrame frame = new GameFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-*/
 	
 	public GameFrame(MessageProcessor processor) {
 		
@@ -280,10 +263,12 @@ public class GameFrame extends JFrame implements Visualizable {
 			  
 			  hitButton.setBounds(483, 0, 97, 50);
 			  buttonsContainer.add(hitButton);
+			  hitButton.setVisible(false);
 			  
 			  standButton = new JButton("STAND");
 			  standButton.setBounds(670, 0, 97, 50);
 			  buttonsContainer.add(standButton);
+			  standButton.setVisible(false);
 			 
 			  setHandlers();
 			 
@@ -335,6 +320,12 @@ public class GameFrame extends JFrame implements Visualizable {
 						processor.setMyTurn(false);
 						return null;
 					}
+					
+					protected void done()
+					{
+						hitButton.setVisible(false);
+						standButton.setVisible(false);
+					}
 
 				};
 				worker.execute();
@@ -342,6 +333,18 @@ public class GameFrame extends JFrame implements Visualizable {
 			}
 
 		});
+	}
+	
+	public void showButtons()
+	{
+		hitButton.setVisible(true);
+		standButton.setVisible(true);
+	}
+	
+	public void hideButtons()
+	{
+		hitButton.setVisible(false);
+		standButton.setVisible(false);
 	}
 	
 	private void setCurrentPanel()
@@ -388,16 +391,8 @@ public class GameFrame extends JFrame implements Visualizable {
 		
 		Component component = panel.getComponentAt(x, y);
 		JLabel label = (JLabel)component;
-		SwingUtilities.invokeLater(new Runnable(){
+		label.setText("YOU");
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				label.setText("YOU");
-			}
-			
-		});
-		
 	}
 	
 	@Override

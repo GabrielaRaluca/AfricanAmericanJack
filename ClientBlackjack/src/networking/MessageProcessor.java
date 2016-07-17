@@ -69,6 +69,7 @@ public class MessageProcessor {
 		if(message.equals("Enter option: HIT/STAND"))
 		{
 			this.myTurn = true;
+			gameFrame.showButtons();
 		}
 		if(message.contains("Player") || message.equals("Dealer"))
 		{
@@ -78,6 +79,7 @@ public class MessageProcessor {
 				|| message.equals("Dealer BUSTED! You Win!")) 
 		{
 			gameFrame.updateInfoLabel(message);
+			gameFrame.hideButtons();
 			this.client.setRunning(false);
 		} 
 		if (message.equals("BUSTED")) 
@@ -86,6 +88,7 @@ public class MessageProcessor {
 			if(myTurn)
 			{
 				gameFrame.updateInfoLabel(message);
+				gameFrame.hideButtons();
 				myTurn = false;
 				this.client.setRunning(false);
 			}

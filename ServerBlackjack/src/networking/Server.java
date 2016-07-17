@@ -33,7 +33,7 @@ public class Server
     public Server()
     {
         gameEnded = false;
-        port = 9797;
+        port = 9999;
         threads = new ArrayList<Serverthread>();
         
         gameLogic = new GameLogic(this);
@@ -50,7 +50,7 @@ public class Server
 
     public void waitForConnections()
     {
-        for(int i = 0; i < 4; i++) //ne conectam toti si jucam
+        for(int i = 0; i < 2; i++) //ne conectam toti si jucam
         {
             try {
 
@@ -63,7 +63,12 @@ public class Server
                 e.printStackTrace();
             }
         }
-
+        try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         System.out.println("Game started: ");
       /*  
 

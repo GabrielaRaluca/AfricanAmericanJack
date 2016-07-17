@@ -69,7 +69,7 @@ public class GameFrame extends JFrame implements Visualizable {
 	 * Launch the application.
 	 */
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -81,7 +81,7 @@ public class GameFrame extends JFrame implements Visualizable {
 			}
 		});
 	}
-
+*/
 	
 	public GameFrame(MessageProcessor processor) {
 		
@@ -157,7 +157,7 @@ public class GameFrame extends JFrame implements Visualizable {
 			  infoLabel = new JLabel("BLACKJACK");
 			  infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			  infoLabel.setFont(new Font("Tahoma", Font.PLAIN, 45));
-			  infoLabel.setBounds(346, 31, 483, 121);
+			  infoLabel.setBounds(346, 31, 583, 121);
 			  infoPanel.add(infoLabel);
 			  
 			  panelPlayer1 = new JPanel();
@@ -284,21 +284,8 @@ public class GameFrame extends JFrame implements Visualizable {
 			  standButton = new JButton("STAND");
 			  standButton.setBounds(670, 0, 97, 50);
 			  buttonsContainer.add(standButton);
-			  //TRIAL
-			  standButton.addActionListener(new ActionListener(){
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					setCurrentPlayer("Dealer");
-					addCard(new Card(10, "Hearts"));
-					setTotal(10);
-					
-				}
-				  
-			  });
-			  
-			  //setHandlers();
+			 
+			  setHandlers();
 			 
 			 }
 
@@ -345,6 +332,7 @@ public class GameFrame extends JFrame implements Visualizable {
 					protected Void doInBackground() throws Exception {
 						// TODO Auto-generated method stub
 						processor.getClient().sendMessage("STAND");
+						processor.setMyTurn(false);
 						return null;
 					}
 
@@ -386,6 +374,30 @@ public class GameFrame extends JFrame implements Visualizable {
 	public void updateInfoLabel(String message)
 	{
 		infoLabel.setText(message);
+	}
+	
+	public ArrayList<JPanel> getPanels()
+	{
+		return panels;
+	}
+	
+	public void updatePlayersName(JPanel panel)
+	{
+		int x = 100;
+		int y = 0;
+		
+		Component component = panel.getComponentAt(x, y);
+		JLabel label = (JLabel)component;
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				label.setText("YOU");
+			}
+			
+		});
+		
 	}
 	
 	@Override
@@ -441,7 +453,7 @@ public class GameFrame extends JFrame implements Visualizable {
 	}
 
 	@Override
-	public void setTotal(int total) 
+	public void setTotal(String total) 
 	{
 		int x;
 		int y;
@@ -483,6 +495,7 @@ public class GameFrame extends JFrame implements Visualizable {
 		setCurrentPanel();
 		
 	}
+
 
 
 }

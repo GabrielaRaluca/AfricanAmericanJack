@@ -15,6 +15,7 @@ public class Main {
 		try {
 			socket = new Socket(IP, PORT);
 			client = new Client(socket);
+			client.startReading();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

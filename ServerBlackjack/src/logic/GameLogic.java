@@ -17,11 +17,20 @@ public class GameLogic
 
 	public void playGame() 
 	{
+		notifyPlayersTurns();
 		sendTwoCardsToAllPlayers();
 		clientsPlay();
 		dealersPlay();
 		sendResultsToAllPlayers();
 		this.server.setGameEnded(true);
+	}
+	
+	public void notifyPlayersTurns()
+	{
+		for(int i = 0; i < this.server.getThreads().size(); i++)
+		{
+			this.server.getThreads().get(i).sendMessage("Your turn is " + i);
+		}
 	}
 
 	public void sendTwoCardsToAllPlayers() 
@@ -66,22 +75,23 @@ public class GameLogic
 	
 	public void clientsPlay() 
 	{
-
 		int i = 0;
 		for(int j = 0; j < this.server.getThreads().size(); j++)
 		{
-			this.server.getThreads().get(j).sendMessage("Player " + (i + 1));
+			if(!this.server.getThreads().get(j).isBusted())
+				this.server.getThreads().get(j).sendMessage("Player " + (i + 1));
 		}
 		this.server.getThreads().get(i).setWait(false);
 		System.out.println("Player " + (i + 1) + "'s turn");
 		while (!this.server.getThreads().get(this.server.getThreads().size() - 1).getFinished()) 
 		{
-			if (this.server.getThreads().get(i).getFinished()) 
+			if (this.server.getThreads().get(i).getFinished() && i < this.server.getThreads().size() - 1) 
 			{
 				i++;
 				for(int j = 0; j < this.server.getThreads().size(); j++)
 				{
-					this.server.getThreads().get(j).sendMessage("Player " + (i + 1));
+					if(!this.server.getThreads().get(j).isBusted())
+						this.server.getThreads().get(j).sendMessage("Player " + (i + 1));
 				}
 				this.server.getThreads().get(i).setWait(false);
 				System.out.println("Player " + (i + 1) + "'s turn");
@@ -94,9 +104,12 @@ public class GameLogic
 	{
 		for(int j = 0; j < this.server.getThreads().size(); j++)
 		{
-			this.server.getThreads().get(j).sendMessage("Dealer's turn");
-			this.server.getThreads().get(j).sendMessage(server.getDealer().getHand().get(1));
-			this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal());
+			if(!this.server.getThreads().get(j).isBusted())
+			{
+				this.server.getThreads().get(j).sendMessage("Dealer's turn");
+				this.server.getThreads().get(j).sendMessage(server.getDealer().getHand().get(1));
+				this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal());
+			}
 		}
 
 		while(!this.server.getDealer().getTotal().isEmpty() && this.server.getDealer().getTotal().get(0) < 17 )
@@ -104,9 +117,19 @@ public class GameLogic
 	         this.server.getDealer().addCard(this.server.getDeck().drawCard());
 	         for(int j = 0; j < this.server.getThreads().size(); j++)
 	 		{
-	 			this.server.getThreads().get(j).sendMessage(this.server.getDealer().getHand().get(this.server.getDealer().getHand().size() - 1));
-	 			this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal());
+	        	if(!this.server.getThreads().get(j).isBusted())
+	        	{
+	        		this.server.getThreads().get(j).sendMessage(this.server.getDealer().getHand().get(this.server.getDealer().getHand().size() - 1));
+	        	}	
 	 		}
+	         if(!this.server.getDealer().getTotal().isEmpty())
+	         {
+	        	 for(int j = 0; j < this.server.getThreads().size(); j++)
+		         {
+	        		 if(!this.server.getThreads().get(j).isBusted())
+	        			 this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal().get(this.server.getDealer().getTotal().size() - 1));
+		         }
+	         }  
 	    }
 	}
 	
@@ -114,7 +137,7 @@ public class GameLogic
 	{
 		for (int i = 0; i < this.server.getThreads().size(); i++) 
 		{
-			if (!this.server.getThreads().get(i).getPlayer().getTotal().isEmpty())
+			if (!this.server.getThreads().get(i).isBusted())
 			{
 				if (!this.server.getDealer().getTotal().isEmpty()) 
 				{
@@ -154,20 +177,28 @@ public class GameLogic
 
             for(int j = 0; j < this.server.getThreads().size(); j++)
             {
-            	this.server.getThreads().get(j).sendMessage(currentClient.getPlayer().getHand().get(currentClient.getPlayer().getHand().size() - 1));
-            	this.server.getThreads().get(j).sendMessage(currentClient.getPlayer().getTotal());
-            }
-            
-          
-            if (currentClient.getPlayer().getTotal().isEmpty()) 
-            {
-            	 for(int j = 0; j < this.server.getThreads().size(); j++)
-                 {
-                 	this.server.getThreads().get(j).sendMessage("BUSTED");
-                 }
-                currentClient.setFinished(true);
+            	if(!this.server.getThreads().get(j).isBusted())
+            		this.server.getThreads().get(j).sendMessage(currentClient.getPlayer().getHand().get(currentClient.getPlayer().getHand().size() - 1));
             }
            
+            if (currentClient.getPlayer().getTotal().isEmpty()) 
+            {
+            	 for(int k = 0; k < this.server.getThreads().size(); k++)
+                 {
+            		if(!this.server.getThreads().get(k).isBusted())
+            			this.server.getThreads().get(k).sendMessage("BUSTED");
+                 }
+                currentClient.setFinished(true);
+                currentClient.setBusted(true);
+            }
+        	else
+        	{
+        		for(int k = 0; k < this.server.getThreads().size(); k++)
+        		{
+        			if(!this.server.getThreads().get(k).isBusted())
+        				this.server.getThreads().get(k).sendMessage(currentClient.getPlayer().getTotal().get(currentClient.getPlayer().getTotal().size() - 1));
+        		}
+        	}
         }
 
         if (option.equals("STAND"))

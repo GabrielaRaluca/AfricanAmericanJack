@@ -21,7 +21,19 @@ public class Serverthread implements Runnable
 
     private volatile boolean finished;
 
-    public ObjectOutputStream getObjectOutputStream()
+    private volatile boolean busted;
+    
+    public boolean isBusted() 
+    {
+		return busted;
+	}
+
+	public void setBusted(boolean busted) 
+	{
+		this.busted = busted;
+	}
+
+	public ObjectOutputStream getObjectOutputStream()
     {
 
         return objectOutputStream;

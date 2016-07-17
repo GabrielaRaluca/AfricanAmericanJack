@@ -17,7 +17,6 @@ public class GameLogic
 
 	public void playGame() 
 	{
-		this.server.setTurn(0);
 		sendTwoCardsToAllPlayers();
 		clientsPlay();
 		dealersPlay();
@@ -41,18 +40,15 @@ public class GameLogic
 
 			Player player = new Player(card1, card2);
 			this.server.getThreads().get(i).setPlayer(player);
-			this.server.getThreads().get(i).sendMessage("You were dealt: ");
-
-			this.server.getThreads().get(i).sendMessage(player.getHand().get(0));
-
-			this.server.getThreads().get(i).sendMessage(player.getHand().get(1));
-
-			this.server.getThreads().get(i).sendMessage("Your sums are: ");
-
-			for (int j = 0; j < player.getTotal().size(); j++) {
-				this.server.getThreads().get(i).sendMessage(player.getTotal().get(j));
+			
+			for(int j = 0; j < this.server.getThreads().size(); j++)
+			{
+				this.server.getThreads().get(j).sendMessage("Player " + (i + 1));
+				this.server.getThreads().get(j).sendMessage(player.getHand().get(0));
+				this.server.getThreads().get(j).sendMessage(player.getHand().get(1));
+				this.server.getThreads().get(j).sendMessage(player.getTotal().get(player.getTotal().size() - 1));
 			}
-
+			
 		}
 		card1 = deck.drawCard();
 		card2 = deck.drawCard();
@@ -63,7 +59,7 @@ public class GameLogic
 		System.out.println("Sending dealer card");
 		for (int i = 0; i < this.server.getThreads().size(); i++) 
 		{
-			this.server.getThreads().get(i).sendMessage("Dealer has: ");
+			this.server.getThreads().get(i).sendMessage("Dealer");
 			this.server.getThreads().get(i).sendMessage(dealer.getHand().get(0));
 		}
 	}
@@ -72,14 +68,21 @@ public class GameLogic
 	{
 
 		int i = 0;
+		for(int j = 0; j < this.server.getThreads().size(); j++)
+		{
+			this.server.getThreads().get(j).sendMessage("Player " + (i + 1));
+		}
 		this.server.getThreads().get(i).setWait(false);
 		System.out.println("Player " + (i + 1) + "'s turn");
-		while (i < this.server.getThreads().size() - 1 || !this.server.getThreads().get(this.server.getThreads().size() - 1).getFinished()) 
+		while (!this.server.getThreads().get(this.server.getThreads().size() - 1).getFinished()) 
 		{
-			if (i < this.server.getThreads().size() - 1 && this.server.getThreads().get(i).getFinished()) 
+			if (this.server.getThreads().get(i).getFinished()) 
 			{
 				i++;
-				this.server.setTurn(i);
+				for(int j = 0; j < this.server.getThreads().size(); j++)
+				{
+					this.server.getThreads().get(j).sendMessage("Player " + (i + 1));
+				}
 				this.server.getThreads().get(i).setWait(false);
 				System.out.println("Player " + (i + 1) + "'s turn");
 			}
@@ -89,10 +92,22 @@ public class GameLogic
 
 	public void dealersPlay()
 	{
-		 while(!this.server.getDealer().getTotal().isEmpty() && this.server.getDealer().getTotal().get(0) < 17 )
-	        {
-	            this.server.getDealer().addCard(this.server.getDeck().drawCard());
-	        }
+		for(int j = 0; j < this.server.getThreads().size(); j++)
+		{
+			this.server.getThreads().get(j).sendMessage("Dealer's turn");
+			this.server.getThreads().get(j).sendMessage(server.getDealer().getHand().get(1));
+			this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal());
+		}
+
+		while(!this.server.getDealer().getTotal().isEmpty() && this.server.getDealer().getTotal().get(0) < 17 )
+	    {
+	         this.server.getDealer().addCard(this.server.getDeck().drawCard());
+	         for(int j = 0; j < this.server.getThreads().size(); j++)
+	 		{
+	 			this.server.getThreads().get(j).sendMessage(this.server.getDealer().getHand().get(this.server.getDealer().getHand().size() - 1));
+	 			this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal());
+	 		}
+	    }
 	}
 	
 	public void sendResultsToAllPlayers() 
@@ -108,10 +123,6 @@ public class GameLogic
 							.get(this.server.getDealer().getTotal().size() - 1);
 					int playerTotal = this.server.getThreads().get(i).getPlayer().getTotal()
 							.get(this.server.getThreads().get(i).getPlayer().getTotal().size() - 1);
-
-					this.server.getThreads().get(i).sendMessage("Dealer has: ");
-
-					this.server.getThreads().get(i).sendMessage(dealerTotal);
 
 					if (dealerTotal > playerTotal) 
 					{
@@ -141,40 +152,27 @@ public class GameLogic
             Card newCard = server.getDeck().drawCard();
             currentClient.getPlayer().addCard(newCard);
 
-            currentClient.sendMessage("You drew:");
-  
-
-            currentClient.sendMessage(currentClient.getPlayer().getHand().get(currentClient.getPlayer().getHand().size() - 1));
-           
-
+            for(int j = 0; j < this.server.getThreads().size(); j++)
+            {
+            	this.server.getThreads().get(j).sendMessage(currentClient.getPlayer().getHand().get(currentClient.getPlayer().getHand().size() - 1));
+            	this.server.getThreads().get(j).sendMessage(currentClient.getPlayer().getTotal());
+            }
+            
+          
             if (currentClient.getPlayer().getTotal().isEmpty()) 
             {
-                currentClient.sendMessage("BUSTED");
+            	 for(int j = 0; j < this.server.getThreads().size(); j++)
+                 {
+                 	this.server.getThreads().get(j).sendMessage("BUSTED");
+                 }
                 currentClient.setFinished(true);
             }
-            else
-            {
-                currentClient.sendMessage("Your hand:");
-
-                for(int i = 0; i < currentClient.getPlayer().getHand().size(); i++)
-                {
-                	currentClient.sendMessage(currentClient.getPlayer().getHand().get(i));
-                }
-
-                currentClient.sendMessage("Your sums are:");
-                
-
-                for (int i = 0; i < currentClient.getPlayer().getTotal().size(); i++)
-                {
-                    currentClient.sendMessage(currentClient.getPlayer().getTotal().get(i));
-                }
-            }
+           
         }
 
         if (option.equals("STAND"))
         {
             currentClient.setFinished(true);
-            currentClient.sendMessage("Please wait for the results");
         }
 	}
 }

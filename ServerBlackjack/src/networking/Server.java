@@ -19,7 +19,6 @@ public class Server
     private ExecutorService executorService;
     
     private int port;
-    private int turn;
 
 
 	private ArrayList<Serverthread> threads;
@@ -153,16 +152,7 @@ public class Server
     {
         return gameEnded;
     }
-    
-    public int getTurn() 
-    {
-  		return turn;
-  	}
-
-  	public void setTurn(int turn) 
-  	{
-  		this.turn = turn;
-  	}
+   
 
     public ArrayList<Serverthread> getThreads() 
     {

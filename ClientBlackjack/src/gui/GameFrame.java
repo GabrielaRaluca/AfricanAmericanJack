@@ -112,7 +112,7 @@ public class GameFrame extends JFrame implements Visualizable {
 			  panelDealer.add(totalDealer);
 			  
 			  layeredPaneDealer = new JLayeredPane();
-			  layeredPaneDealer.setBounds(10, 75, 363, 96);
+			  layeredPaneDealer.setBounds(10, 75, 363, 120);
 			  panelDealer.add(layeredPaneDealer);
 			  
 			  deckLabel = new JLabel("");
@@ -166,7 +166,7 @@ public class GameFrame extends JFrame implements Visualizable {
 			  panelPlayer1.add(totalPlayer1);
 			  
 			  layeredPanePlayer1 = new JLayeredPane();
-			  layeredPanePlayer1.setBounds(12, 135, 285, 96);
+			  layeredPanePlayer1.setBounds(12, 125, 285, 120);
 			  panelPlayer1.add(layeredPanePlayer1);
 			  
 			  panelPlayer2 = new JPanel();
@@ -192,7 +192,7 @@ public class GameFrame extends JFrame implements Visualizable {
 			  panelPlayer2.add(totalPlayer2);
 			  
 			  layeredPanePlayer2 = new JLayeredPane();
-			  layeredPanePlayer2.setBounds(12, 135, 285, 96);
+			  layeredPanePlayer2.setBounds(12, 125, 285, 120);
 			  panelPlayer2.add(layeredPanePlayer2);
 			  
 			  panelPlayer3 = new JPanel();
@@ -218,7 +218,7 @@ public class GameFrame extends JFrame implements Visualizable {
 			  panelPlayer3.add(totalPlayer3);
 			  
 			  layeredPanePlayer3 = new JLayeredPane();
-			  layeredPanePlayer3.setBounds(12, 135, 285, 96);
+			  layeredPanePlayer3.setBounds(12, 125, 285, 120);
 			  panelPlayer3.add(layeredPanePlayer3);
 			  
 			  panelPlayer4 = new JPanel();
@@ -244,7 +244,7 @@ public class GameFrame extends JFrame implements Visualizable {
 			  panelPlayer4.add(totalPlayer4);
 			  
 			  layeredPanePlayer4 = new JLayeredPane();
-			  layeredPanePlayer4.setBounds(12, 135, 285, 96);
+			  layeredPanePlayer4.setBounds(12, 125, 285, 120);
 			  panelPlayer4.add(layeredPanePlayer4);
 			  
 			  currentPanel = panelPlayer1;
@@ -402,8 +402,9 @@ public class GameFrame extends JFrame implements Visualizable {
 		String path = "/resources/" + card.toString() + ".png";
 		JLabel label = new JLabel();
 		label.setHorizontalAlignment(SwingConstants.TRAILING);
+		
 		ImageIcon image = new ImageIcon(this.getClass().getResource(path));
-		Image scaleImage = image.getImage().getScaledInstance(55, 75, Image.SCALE_DEFAULT);
+		Image scaleImage = image.getImage().getScaledInstance(90, 110, Image.SCALE_DEFAULT);
 		ImageIcon icon = new ImageIcon(scaleImage);
 		label.setIcon(icon);
 		JLayeredPane currentPane;
@@ -420,9 +421,9 @@ public class GameFrame extends JFrame implements Visualizable {
 			nrOfCards = currentPane.getComponentCount();
 
 			if (nrOfCards > 0) {
-				label.setBounds(currentPane.getComponent(0).getX() + 15, 0, 55, 75);
+				label.setBounds(currentPane.getComponent(0).getX() + 15, 0, 90, 110);
 			} else {
-				label.setBounds(0, 0, 55, 75);
+				label.setBounds(0, 0, 90, 110);
 			}
 
 			currentPane.add(label, new Integer(nrOfCards), nrOfCards);
@@ -430,15 +431,15 @@ public class GameFrame extends JFrame implements Visualizable {
 		else
 		{
 			x = 12;
-			y = 135;
+			y = 125;
 			component = currentPanel.getComponentAt(x, y);
 			currentPane = (JLayeredPane)component;
 			nrOfCards = currentPane.getComponentCount();
 
 			if (nrOfCards > 0) {
-				label.setBounds(currentPane.getComponent(0).getX() + 15, 0, 55, 75);
+				label.setBounds(currentPane.getComponent(0).getX() + 15, 0, 90, 110);
 			} else {
-				label.setBounds(0, 0, 55, 75);
+				label.setBounds(0, 0, 90, 110);
 			}
 
 			currentPane.add(label, new Integer(nrOfCards), nrOfCards);

@@ -108,7 +108,7 @@ public class GameLogic
 			{
 				this.server.getThreads().get(j).sendMessage("Dealer's turn");
 				this.server.getThreads().get(j).sendMessage(server.getDealer().getHand().get(1));
-				this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal());
+				this.server.getThreads().get(j).sendMessage(this.server.getDealer().getTotal().get(this.server.getDealer().getTotal().size() - 1));
 			}
 		}
 

@@ -50,7 +50,7 @@ public class Server
 
     public void waitForConnections()
     {
-        for(int i = 0; i < 4; i++) //ne conectam toti si jucam
+        for(int i = 0; i < 1; i++) //ne conectam toti si jucam
         {
             try {
 
